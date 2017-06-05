@@ -79,7 +79,7 @@
       console.log('maps component')
       // this.pinImage = VueGoogleMaps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + 'FFFF00', VueGoogleMaps.Size(21, 34), VueGoogleMaps.Point(0, 0), VueGoogleMaps.Point(10, 34))
 
-      this.$http.get('http://www.dji.com/api/no-fly/country/SG?v=2')
+      this.$http.get('//www.dji.com/api/no-fly/country/SG?v=2')
         .then((response) => {
           this.nfz = response.data.data
           this.loaded()
