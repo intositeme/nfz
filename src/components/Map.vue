@@ -17,7 +17,7 @@
       <gmap-marker
         v-if="currentLocation"
         :position="currentLocation"
-        icon="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FFFF00"
+        icon="//chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FFFF00"
         animation=2
       ></gmap-marker>
 
