@@ -1,10 +1,20 @@
 <template>
   <div class="holder">
-    <h1>Maps</h1>
+    <div class="overlay">
+      <div class="container-fluid">
+        <div class="row justify-content-end" >
+          <div class="col-6">
+            <v-select :options="countryList" :value.sync="selectedCountry" :on-change="onSelectChange"></v-select>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
     <gmap-map
       :center="getCenter"
       :zoom="zoom"
-      style="width: 100%; min-height: 500px"
+      style="width: 100%; min-height: 100vh"
     >
       <gmap-marker
         :key="index"
@@ -36,6 +46,7 @@
   import * as VueGoogleMaps from 'vue2-google-maps'
   import Vue from 'vue'
   import nfzData from '@/components/nfz-sg'
+  import countries from '@/components/countries'
   // http://www.dji.com/api/no-fly/country/SG?v=2
   //
   Vue.use(VueGoogleMaps, {
@@ -46,12 +57,20 @@
     }
   })
 
+  const countryList = []
+
+  for (let key in countries) {
+    countryList.push({label: countries[key], value: key})
+  }
+
   export default {
     data () {
       return {
         center: {lat: 1.352083, lng: 103.819836},
         zoom: 11,
         nfz: [],
+        countries: countries,
+        countryList: countryList,
         circleOptions: {
           strokeColor: '#FF0000',
           strokeOpacity: 0.8,
@@ -60,7 +79,8 @@
           fillOpacity: 0.35
         },
         currentLocation: null,
-        pinImage: {}
+        pinImage: {},
+        selectedCountry: null
         /*
         markers: [{
           position: {lat: 10.0, lng: 10.0}
@@ -77,7 +97,7 @@
       }
     },
     mounted () {
-      console.log('maps component')
+      console.log('maps component', countryList)
       // this.pinImage = VueGoogleMaps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + 'FFFF00', VueGoogleMaps.Size(21, 34), VueGoogleMaps.Point(0, 0), VueGoogleMaps.Point(10, 34))
       this.nfz = nfzData.data
       this.loaded()
@@ -104,8 +124,34 @@
         this.currentLocation = {}
         this.currentLocation.lat = position.coords.latitude
         this.currentLocation.lng = position.coords.longitude
+      },
+      onSelectChange (val) {
+        console.log('onSelect change', val)
+        let countrycode = val.value
+        this.$http.get(`assets/json/${countrycode}.json`)
+          .then((response) => {
+            this.nfz = response.data.data
+            // this.loaded()
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
       }
     }
   }
 
 </script>
+
+<style lang="scss">
+  .overlay {
+    width: 100%;
+    position: fixed;
+    z-index: 10;
+    top: 0px;
+    left: 0px;
+  }
+
+  .v-select.dropdown {
+    background-color: white;
+  }
+</style>
