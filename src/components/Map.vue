@@ -3,8 +3,9 @@
     <div class="overlay">
       <div class="container-fluid">
         <div class="row justify-content-end" >
-          <div class="col-6">
-            <v-select :options="countryList" :value.sync="selectedCountry" :on-change="onSelectChange"></v-select>
+          <div class="col-8">
+            <div class="list-holder"><v-select :options="countryList" :value.sync="selectedCountry" :on-change="onSelectChange"></v-select></div>
+            
           </div>
         </div>
       </div>
@@ -160,5 +161,8 @@
 
   .v-select.dropdown {
     background-color: white;
+  }
+  .list-holder {
+    padding-top: 9px;
   }
 </style>
