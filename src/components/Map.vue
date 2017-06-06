@@ -23,6 +23,8 @@
         v-for="(m, index) in nfz"
         :position="m"
         :clickable="true"
+        :icon="getIcon(m.type)"
+
         @click="center=m"
       ></gmap-marker>
 
@@ -144,6 +146,18 @@
           .catch(function (error) {
             console.log(error)
           })
+      },
+      getIcon (type) {
+        if (type === 1) {
+          return '//chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2A7F9A'
+        }
+        if (type === 2) {
+          return '//chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|E4A727'
+        }
+        if (type === 3) {
+          return '//chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|589B58'
+        }
+        return '//chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|A71638'
       }
     }
   }
