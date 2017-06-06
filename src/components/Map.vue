@@ -12,6 +12,7 @@
     </div>
     
     <gmap-map
+      ref="map"
       :center="getCenter"
       :zoom="zoom"
       style="width: 100%; min-height: 100vh"
@@ -80,7 +81,8 @@
         },
         currentLocation: null,
         pinImage: {},
-        selectedCountry: null
+        selectedCountry: null,
+        geocoder: {}
         /*
         markers: [{
           position: {lat: 10.0, lng: 10.0}
@@ -97,18 +99,13 @@
       }
     },
     mounted () {
-      console.log('maps component', countryList)
-      // this.pinImage = VueGoogleMaps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + 'FFFF00', VueGoogleMaps.Size(21, 34), VueGoogleMaps.Point(0, 0), VueGoogleMaps.Point(10, 34))
+      VueGoogleMaps.loaded.then(() => {
+        // console.log('VueGoogleMaps.loaded', google)
+        this.geocoder = new google.maps.Geocoder()
+      })
+      console.log('maps component', VueGoogleMaps.loaded)
       this.nfz = nfzData.data
       this.loaded()
-      /* this.$http.get('//www.dji.com/api/no-fly/country/SG?v=2')
-        .then((response) => {
-          this.nfz = response.data.data
-          this.loaded()
-        })
-        .catch(function (error) {
-          console.log(error)
-        }) */
     },
     methods: {
       loaded () {
@@ -132,6 +129,16 @@
           .then((response) => {
             this.nfz = response.data.data
             // this.loaded()
+            this.geocoder.geocode({ 'address': val.label }, (results, status) => {
+              if (status === google.maps.GeocoderStatus.OK) {
+                // map.setCenter(results[0].geometry.location)
+                console.log('changed country recenter found', results[0], this.$refs)
+                this.$refs.map.$mapObject.setCenter(results[0].geometry.location)
+                this.$refs.map.$mapObject.fitBounds(results[0].geometry.viewport)
+                // this.center.lat = results[0].geometry.location.lat
+                // this.center.lng = results[0].geometry.location.lng
+              }
+            })
           })
           .catch(function (error) {
             console.log(error)
